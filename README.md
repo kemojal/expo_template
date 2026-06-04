@@ -1,56 +1,80 @@
-# Welcome to your Expo app 👋
+# Expo monorepo template
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Bun workspaces monorepo with the Expo mobile app in `apps/mobile`.
 
 ## Get started
 
-1. Install dependencies
+1. Install dependencies (repo root):
 
    ```bash
-   npm install
+   bun install
    ```
 
-2. Start the app
+2. Start the mobile app:
+
+   **From the repo root**
 
    ```bash
-   npx expo start
+   bun run dev
    ```
 
-In the output, you'll find options to open the app in a
+   Or target the mobile package directly:
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+   ```bash
+   bun run --filter '@repo/mobile' start
+   ```
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+   **From `apps/mobile`**
 
-## Get a fresh project
+   ```bash
+   cd apps/mobile
+   bun run start
+   # or: npx expo start
+   ```
 
-When you're ready, run:
+3. Open on a platform
+
+   From the repo root:
+
+   ```bash
+   bun run --filter '@repo/mobile' ios
+   bun run --filter '@repo/mobile' android
+   bun run --filter '@repo/mobile' web
+   ```
+
+   From `apps/mobile`:
+
+   ```bash
+   bun run ios
+   bun run android
+   bun run web
+   ```
+
+   You can also use the Metro terminal shortcuts after `start` (e.g. `i` for iOS, `a` for Android).
+
+### Clear Metro cache
+
+If you hit stale bundle or dependency errors, restart with a clean cache:
 
 ```bash
-npm run reset-project
+cd apps/mobile
+bun run start -- -c
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Apple Sign In client secret
 
-### Other setup steps
+Better Auth expects `APPLE_CLIENT_SECRET` to be a JWT you sign with your Apple `.p8` key. Generate it locally (key never leaves your browser):
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+1. Start the API: `bun run dev:api`
+2. Open [http://localhost:3000/tools/apple-client-secret](http://localhost:3000/tools/apple-client-secret)
+3. Paste the JWT into `APPLE_CLIENT_SECRET` in `.env` (regenerate before it expires, up to 180 days)
+
+## Mobile app
+
+- Routes: `apps/mobile/src/app/` ([Expo Router](https://docs.expo.dev/router/introduction/))
+- Run `bun run lint` or `bun run typecheck` from the repo root to check all workspaces
 
 ## Learn more
 
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- [Expo documentation](https://docs.expo.dev/)
+- [Expo SDK 56 docs](https://docs.expo.dev/versions/v56.0.0/)

@@ -31,12 +31,24 @@ yarn-error.*
 *.pem
 
 # local env files
+.env
+.env.development
+.env.production
 .env*.local
 
 # typescript
 *.tsbuildinfo
 
 example
+
+# Bun
+bun.lock
+
+# Turbo
+.turbo/
+
+# Build outputs
+dist/
 
 # generated native folders
 /ios

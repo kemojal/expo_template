@@ -1,0 +1,21 @@
+appId: com.template
+---
+# Sign In Flow
+- launchApp
+
+# Should show sign-in screen
+- assertVisible: "Welcome back"
+
+# Fill credentials
+- tapOn:
+    id: "email-input"
+- inputText: "testuser@example.com"
+- tapOn:
+    id: "password-input"
+- inputText: "password123"
+
+# Submit
+- tapOn: "Sign In"
+
+# Should navigate to home
+- assertVisible: "Home"

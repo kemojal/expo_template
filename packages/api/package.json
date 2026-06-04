@@ -1,0 +1,30 @@
+{
+  "name": "@repo/api",
+  "private": true,
+  "version": "0.0.0",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "dev": "bun run --hot src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1061.0",
+    "@aws-sdk/s3-request-presigner": "^3.1061.0",
+    "@better-auth/expo": "^1.6.14",
+    "@repo/db": "workspace:*",
+    "@repo/shared": "workspace:*",
+    "better-auth": "^1.6.14",
+    "hono": "^4.12.23",
+    "tinybase": "^8.4.2",
+    "ws": "^8.21.0"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/bun": "latest",
+    "@types/ws": "^8.18.1",
+    "dotenv": "^17.4.2",
+    "typescript": "~6.0.3"
+  }
+}
