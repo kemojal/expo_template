@@ -1,0 +1,1 @@
+1.1. Eas credential  —> choose platform 
