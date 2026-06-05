@@ -42,7 +42,7 @@ yarn-error.*
 example
 
 # Bun
-bun.lock
+# bun.lock — committed for reproducible Docker builds
 
 # Turbo
 .turbo/
