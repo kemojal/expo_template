@@ -25,20 +25,19 @@ function trustedOrigins() {
     ...envList(process.env.BETTER_AUTH_TRUSTED_ORIGINS),
   ];
 
-  const developmentOrigins =
-    process.env.NODE_ENV === "production"
-      ? []
-      : [
-          "exp://",
-          "exp://**",
-          "exp://localhost:8081",
-          "exp://127.0.0.1:8081",
-          "exp://192.168.*.*:*/**",
-          "exp://10.*.*.*:*/**",
-          "exp://172.16.*.*:*/**",
-        ];
+  // Expo Go uses exp:// scheme — needed in all environments when
+  // testing with Expo Go against a production API
+  const expoOrigins = [
+    "exp://",
+    "exp://**",
+    "exp://localhost:8081",
+    "exp://127.0.0.1:8081",
+    "exp://192.168.*.*:*/**",
+    "exp://10.*.*.*:*/**",
+    "exp://172.16.*.*:*/**",
+  ];
 
-  return Array.from(new Set([...baseOrigins, ...developmentOrigins]));
+  return Array.from(new Set([...baseOrigins, ...expoOrigins]));
 }
 
 export const auth = betterAuth({
