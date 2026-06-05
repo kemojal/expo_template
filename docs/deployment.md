@@ -2,12 +2,17 @@
 
 ## 1. Create the service
 
+- Type: **Application**
 - Source: your Git repo
+- Branch: the branch with the Dockerfile (e.g. `kemo`)
 - Build type: **Dockerfile** (auto-detected from root `Dockerfile`)
+- Docker File: `./Dockerfile`
+- Docker Context Path: `.`
+- Docker Build Stage: leave empty
 
 ## 2. Environment variables
 
-Set these in the Dokploy UI under your service's environment configuration:
+Set these in the Dokploy UI under your service's **Environment** tab **before** deploying:
 
 | Variable | Value |
 |---|---|
@@ -51,3 +56,24 @@ Run before first deploy (or as a one-time command in Dokploy):
 ```bash
 bun run --cwd packages/db db:migrate
 ```
+
+## Troubleshooting
+
+### 502 Bad Gateway
+
+The container built but the app isn't responding. Common causes:
+
+1. **Missing env vars** — make sure all required variables (especially `DATABASE_URL` and `BETTER_AUTH_SECRET`) are set in Dokploy's Environment tab before deploying.
+2. **Database not reachable** — verify `DATABASE_URL` is correct and the database allows connections from your Dokploy server's IP.
+3. **Port mismatch** — ensure the domain in Dokploy routes to port `3000`.
+4. **Check container logs** — go to your service's **Logs** tab in Dokploy to see the actual error.
+
+### Lockfile errors
+
+If you see `lockfile had changes, but lockfile is frozen`, regenerate locally:
+
+```bash
+bun install
+```
+
+Then commit and push `bun.lock`.

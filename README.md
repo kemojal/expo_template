@@ -94,18 +94,62 @@ Better Auth expects `APPLE_CLIENT_SECRET` to be a JWT you sign with your Apple `
 2. Open [http://localhost:3000/tools/apple-client-secret](http://localhost:3000/tools/apple-client-secret)
 3. Fill in the form — the key never leaves your browser.
 
+## Google Sign In setup
+
+1. Go to [Google Cloud Console → Credentials](https://console.cloud.google.com/apis/credentials)
+2. Select your OAuth 2.0 Client ID
+3. Add to **Authorized JavaScript origins**:
+   ```
+   http://localhost:3000
+   https://your-api-domain.com
+   ```
+4. Add to **Authorized redirect URIs**:
+   ```
+   http://localhost:3000/api/auth/callback/google
+   https://your-api-domain.com/api/auth/callback/google
+   ```
+5. Save and set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` in your `.env`
+
 ## Deploying the API (Dokploy / Docker)
 
-The repo includes a `Dockerfile` at the root that builds the API server.
+The repo includes a `Dockerfile` at the root that builds the API server. See [docs/deployment.md](docs/deployment.md) for full Dokploy setup instructions.
 
-1. Point Dokploy at your Git repo — it auto-detects the `Dockerfile`.
-2. Set the environment variables listed in `.env.example` in Dokploy's UI.
-3. Expose ports **3000** (HTTP) and **3001** (WebSocket sync).
-4. Health check endpoint: `GET /health`
-5. Run database migrations before first deploy:
-   ```bash
-   bun run --cwd packages/db db:migrate
-   ```
+- **Production API:** `https://api.kemojallow.com`
+
+## Environment files
+
+This monorepo uses **two separate `.env` files**:
+
+| File | Used by | Purpose |
+|---|---|---|
+| `.env` (repo root) | API server (`packages/api`) | Database, auth secrets, R2, etc. |
+| `apps/mobile/.env` | Mobile app (Metro/Expo) | `EXPO_PUBLIC_*` vars for the client |
+
+Expo loads `.env` from the **app directory**, not the monorepo root. The mobile app will not see variables from the root `.env`.
+
+### `apps/mobile/.env` example
+
+```
+EXPO_PUBLIC_API_URL=http://localhost:3000
+EXPO_PUBLIC_SYNC_URL=ws://localhost:3001
+```
+
+For production (or to test against the live API):
+
+```
+EXPO_PUBLIC_API_URL=https://api.kemojallow.com
+EXPO_PUBLIC_SYNC_URL=wss://sync.kemojallow.com
+```
+
+### EAS build profiles
+
+EAS builds use the env vars defined in `apps/mobile/eas.json`, which override the `.env` file:
+
+| Profile | API URL | Sync URL |
+|---|---|---|
+| `development` | `http://localhost:3000` | `ws://localhost:3001` |
+| `preview` | `https://api.kemojallow.com` | `wss://sync.kemojallow.com` |
+| `production` | `https://api.kemojallow.com` | `wss://sync.kemojallow.com` |
 
 ## Mobile app
 
@@ -116,4 +160,3 @@ The repo includes a `Dockerfile` at the root that builds the API server.
 
 - [Expo documentation](https://docs.expo.dev/)
 - [Expo SDK 56 docs](https://docs.expo.dev/versions/v56.0.0/)
-run backend  npm run dev:api o

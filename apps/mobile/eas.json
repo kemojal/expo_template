@@ -15,15 +15,15 @@
     "preview": {
       "distribution": "internal",
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://api-preview.example.com",
-        "EXPO_PUBLIC_SYNC_URL": "wss://sync-preview.example.com"
+        "EXPO_PUBLIC_API_URL": "https://api.kemojallow.com",
+        "EXPO_PUBLIC_SYNC_URL": "wss://sync.kemojallow.com"
       }
     },
     "production": {
       "autoIncrement": true,
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://api.example.com",
-        "EXPO_PUBLIC_SYNC_URL": "wss://sync.example.com"
+        "EXPO_PUBLIC_API_URL": "https://api.kemojallow.com",
+        "EXPO_PUBLIC_SYNC_URL": "wss://sync.kemojallow.com"
       }
     }
   },
