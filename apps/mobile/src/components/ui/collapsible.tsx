@@ -1,7 +1,8 @@
 import { SymbolView } from 'expo-symbols';
 import { PropsWithChildren, useState } from 'react';
-import { Pressable, StyleSheet } from 'react-native';
-import Animated, { FadeIn } from 'react-native-reanimated';
+import { StyleSheet } from 'react-native';
+import { EaseView } from 'react-native-ease';
+import { PressableScale } from 'pressto';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -14,9 +15,11 @@ export function Collapsible({ children, title }: PropsWithChildren & { title: st
 
   return (
     <ThemedView>
-      <Pressable
-        style={({ pressed }) => [styles.heading, pressed && styles.pressedHeading]}
-        onPress={() => setIsOpen((value) => !value)}>
+      <PressableScale
+        style={styles.heading}
+        onPress={() => setIsOpen((value) => !value)}
+        accessibilityRole="button"
+        accessibilityState={{ expanded: isOpen }}>
         <ThemedView type="backgroundElement" style={styles.button}>
           <SymbolView
             name={{ ios: 'chevron.right', android: 'chevron_right', web: 'chevron_right' }}
@@ -28,13 +31,16 @@ export function Collapsible({ children, title }: PropsWithChildren & { title: st
         </ThemedView>
 
         <ThemedText type="small">{title}</ThemedText>
-      </Pressable>
+      </PressableScale>
       {isOpen && (
-        <Animated.View entering={FadeIn.duration(200)}>
+        <EaseView
+          initialAnimate={{ opacity: 0, translateY: -4 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'timing', duration: 180, easing: 'easeOut' }}>
           <ThemedView type="backgroundElement" style={styles.content}>
             {children}
           </ThemedView>
-        </Animated.View>
+        </EaseView>
       )}
     </ThemedView>
   );
@@ -45,9 +51,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.two,
-  },
-  pressedHeading: {
-    opacity: 0.7,
   },
   button: {
     width: Spacing.four,

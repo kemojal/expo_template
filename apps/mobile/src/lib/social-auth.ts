@@ -1,6 +1,9 @@
 import { Platform } from "react-native";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { authClient } from "./auth";
+import { haptics } from "./haptics";
+
+const appCallbackURL = "/callback";
 
 /**
  * Sign in with Apple.
@@ -32,18 +35,21 @@ export async function signInWithApple() {
       throw new Error(error.message || "Apple sign in failed");
     }
 
+    haptics.success();
     return;
   }
 
   // Android / web fallback — web-based OAuth flow
   const { error } = await authClient.signIn.social({
     provider: "apple",
-    callbackURL: "/",
+    callbackURL: appCallbackURL,
   });
 
   if (error) {
     throw new Error(error.message || "Apple sign in failed");
   }
+
+  haptics.success();
 }
 
 /**
@@ -54,10 +60,12 @@ export async function signInWithApple() {
 export async function signInWithGoogle() {
   const { error } = await authClient.signIn.social({
     provider: "google",
-    callbackURL: "/",
+    callbackURL: appCallbackURL,
   });
 
   if (error) {
     throw new Error(error.message || "Google sign in failed");
   }
+
+  haptics.success();
 }

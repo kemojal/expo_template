@@ -1,65 +1,82 @@
-import { Platform, Pressable, ScrollView, StyleSheet } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
+import { Platform, ScrollView, StyleSheet, View } from "react-native";
+import { EaseView } from "react-native-ease";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { SettingsRow } from "@/components/settings";
 import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
-import { authClient } from "@/lib/auth";
-import { Spacing } from "@/constants/theme";
+import { Avatar } from "@/components/ui";
+import { MaxContentWidth, Radii, Shadows, Spacing, Typography } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
+import { authClient } from "@/lib/auth";
 
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const theme = useTheme();
   const { data: session } = authClient.useSession();
+  const user = session?.user;
+  const name = user?.name || "Workspace user";
+  const initials = name.charAt(0).toUpperCase();
 
   return (
     <ScrollView
       style={[styles.scrollView, { backgroundColor: theme.background }]}
+      contentInsetAdjustmentBehavior="automatic"
+      showsVerticalScrollIndicator={false}
       contentContainerStyle={[
-        styles.contentContainer,
-        { paddingBottom: insets.bottom + Spacing.four },
+        styles.content,
+        {
+          paddingTop: insets.top + Spacing.five,
+          paddingBottom: insets.bottom + Spacing.five,
+        },
       ]}
     >
-      <ThemedView style={styles.avatarSection}>
-        <ThemedView type="backgroundElement" style={styles.avatarPlaceholder}>
-          <ThemedText type="title">
-            {session?.user.name?.charAt(0).toUpperCase() ?? "?"}
+      <EaseView
+        initialAnimate={{ opacity: 0, translateY: 8 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        transition={{ type: "timing", duration: 220, easing: "easeOut" }}
+        style={[
+          styles.hero,
+          Shadows.sm,
+          {
+            backgroundColor: theme.backgroundElement,
+            borderColor: theme.border,
+          },
+        ]}
+      >
+        <Avatar fallback={initials} size="lg" />
+        <View style={styles.heroCopy}>
+          <ThemedText style={styles.name} selectable>
+            {name}
           </ThemedText>
-        </ThemedView>
-        <ThemedText type="subtitle">{session?.user.name}</ThemedText>
-        <ThemedText themeColor="textSecondary">{session?.user.email}</ThemedText>
-      </ThemedView>
+          <ThemedText
+            style={styles.email}
+            themeColor="textSecondary"
+            selectable
+            numberOfLines={1}
+          >
+            {user?.email}
+          </ThemedText>
+        </View>
+      </EaseView>
 
-      <ThemedView style={styles.section}>
-        <ThemedView type="backgroundElement" style={styles.infoRow}>
-          <ThemedText themeColor="textSecondary">Name</ThemedText>
-          <ThemedText>{session?.user.name}</ThemedText>
-        </ThemedView>
-
-        <ThemedView type="backgroundElement" style={styles.infoRow}>
-          <ThemedText themeColor="textSecondary">Email</ThemedText>
-          <ThemedText>{session?.user.email}</ThemedText>
-        </ThemedView>
-
-        <ThemedView type="backgroundElement" style={styles.infoRow}>
-          <ThemedText themeColor="textSecondary">Email verified</ThemedText>
-          <ThemedText>{session?.user.emailVerified ? "Yes" : "No"}</ThemedText>
-        </ThemedView>
-      </ThemedView>
+      <View style={styles.section}>
+        <SettingsRow title="Name" value={user?.name} icon="person.text.rectangle" />
+        <SettingsRow title="Email" value={user?.email} icon="envelope" />
+        <SettingsRow
+          title="Email verified"
+          value={user?.emailVerified ? "Yes" : "No"}
+          icon={user?.emailVerified ? "checkmark.seal" : "exclamationmark.triangle"}
+        />
+      </View>
 
       {Platform.OS !== "web" && (
-        <Pressable
+        <SettingsRow
+          title="Close"
+          icon="xmark"
           onPress={() => router.back()}
-          style={({ pressed }) => [
-            styles.closeButton,
-            { backgroundColor: theme.backgroundElement },
-            pressed && styles.pressed,
-          ]}
-        >
-          <ThemedText>Close</ThemedText>
-        </Pressable>
+        />
       )}
     </ScrollView>
   );
@@ -69,39 +86,38 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
-  contentContainer: {
+  content: {
+    width: "100%",
+    maxWidth: MaxContentWidth,
+    alignSelf: "center",
     paddingHorizontal: Spacing.four,
-    paddingTop: Spacing.five,
     gap: Spacing.five,
   },
-  avatarSection: {
+  hero: {
+    borderRadius: Radii.lg,
+    borderWidth: 1,
+    padding: Spacing.five,
     alignItems: "center",
-    gap: Spacing.two,
+    gap: Spacing.three,
   },
-  avatarPlaceholder: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    justifyContent: "center",
+  heroCopy: {
     alignItems: "center",
+    gap: Spacing.one,
+    alignSelf: "stretch",
+  },
+  name: {
+    fontSize: Typography.xl.fontSize,
+    lineHeight: Typography.xl.lineHeight,
+    fontWeight: "800",
+    textAlign: "center",
+  },
+  email: {
+    fontSize: Typography.sm.fontSize,
+    lineHeight: Typography.sm.lineHeight,
+    textAlign: "center",
+    alignSelf: "stretch",
   },
   section: {
     gap: Spacing.two,
-  },
-  infoRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.three,
-    borderRadius: Spacing.two,
-  },
-  closeButton: {
-    alignItems: "center",
-    paddingVertical: Spacing.three,
-    borderRadius: Spacing.two,
-  },
-  pressed: {
-    opacity: 0.7,
   },
 });

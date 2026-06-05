@@ -20,8 +20,11 @@ export function Card({ children, style, ...props }: CardProps) {
     <View
       style={[
         styles.card,
-        Shadows.md,
-        { backgroundColor: theme.backgroundElement },
+        Shadows.sm,
+        {
+          backgroundColor: theme.backgroundElement,
+          borderColor: theme.border,
+        },
         style,
       ]}
       {...props}
@@ -55,14 +58,17 @@ export function CardContent({ children, style, ...props }: CardProps) {
 const styles = StyleSheet.create({
   card: {
     borderRadius: Radii.lg,
+    borderWidth: 1,
     overflow: "hidden",
   },
   header: {
-    padding: Spacing.three,
+    paddingHorizontal: Spacing.four,
+    paddingTop: Spacing.four,
+    paddingBottom: Spacing.two,
     gap: Spacing.one,
   },
   content: {
-    paddingHorizontal: Spacing.three,
-    paddingBottom: Spacing.three,
+    paddingHorizontal: Spacing.four,
+    paddingBottom: Spacing.four,
   },
 });

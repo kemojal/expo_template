@@ -9,42 +9,42 @@ import { Platform } from 'react-native';
 
 export const Colors = {
   light: {
-    text: '#000000',
-    background: '#ffffff',
-    backgroundElement: '#F0F0F3',
-    backgroundSelected: '#E0E1E6',
-    textSecondary: '#60646C',
-    // Semantic
-    primary: '#0095FF',
-    primaryForeground: '#FFFFFF',
-    destructive: '#FF3B30',
-    destructiveForeground: '#FFFFFF',
-    success: '#34C759',
-    successForeground: '#FFFFFF',
-    warning: '#FF9500',
-    warningForeground: '#FFFFFF',
-    border: '#E0E1E6',
-    inputBackground: '#F0F0F3',
-    overlay: 'rgba(0, 0, 0, 0.4)',
-  },
-  dark: {
-    text: '#ffffff',
-    background: '#000000',
-    backgroundElement: '#212225',
-    backgroundSelected: '#2E3135',
-    textSecondary: '#B0B4BA',
+    text: '#101114',
+    background: '#F7F7F5',
+    backgroundElement: '#FFFFFF',
+    backgroundSelected: '#ECEDEA',
+    textSecondary: '#6F747A',
     // Semantic
     primary: '#0A84FF',
     primaryForeground: '#FFFFFF',
-    destructive: '#FF453A',
+    destructive: '#D92D20',
     destructiveForeground: '#FFFFFF',
-    success: '#30D158',
+    success: '#1F9D55',
     successForeground: '#FFFFFF',
-    warning: '#FF9F0A',
+    warning: '#C77800',
     warningForeground: '#FFFFFF',
-    border: '#2E3135',
-    inputBackground: '#212225',
-    overlay: 'rgba(0, 0, 0, 0.6)',
+    border: '#E2E3DF',
+    inputBackground: '#FFFFFF',
+    overlay: 'rgba(16, 17, 20, 0.36)',
+  },
+  dark: {
+    text: '#F5F5F2',
+    background: '#0C0D0F',
+    backgroundElement: '#17191C',
+    backgroundSelected: '#25282D',
+    textSecondary: '#A5ABB3',
+    // Semantic
+    primary: '#64A8FF',
+    primaryForeground: '#FFFFFF',
+    destructive: '#FF6157',
+    destructiveForeground: '#FFFFFF',
+    success: '#4BD47F',
+    successForeground: '#FFFFFF',
+    warning: '#FFB340',
+    warningForeground: '#FFFFFF',
+    border: '#2D3035',
+    inputBackground: '#14161A',
+    overlay: 'rgba(0, 0, 0, 0.56)',
   },
 } as const;
 
@@ -79,57 +79,35 @@ export const Spacing = {
   half: 2,
   one: 4,
   two: 8,
-  three: 16,
-  four: 24,
-  five: 32,
-  six: 64,
+  three: 12,
+  four: 16,
+  five: 24,
+  six: 40,
 } as const;
 
 export const Typography = {
   xs: { fontSize: 12, lineHeight: 16 },
-  sm: { fontSize: 14, lineHeight: 20 },
-  base: { fontSize: 16, lineHeight: 24 },
-  lg: { fontSize: 18, lineHeight: 28 },
-  xl: { fontSize: 20, lineHeight: 28 },
-  '2xl': { fontSize: 24, lineHeight: 32 },
+  sm: { fontSize: 13, lineHeight: 18 },
+  base: { fontSize: 15, lineHeight: 22 },
+  lg: { fontSize: 17, lineHeight: 24 },
+  xl: { fontSize: 20, lineHeight: 26 },
+  '2xl': { fontSize: 24, lineHeight: 30 },
   '3xl': { fontSize: 30, lineHeight: 36 },
 } as const;
 
 export const Radii = {
   sm: 6,
-  md: 10,
-  lg: 16,
-  xl: 24,
+  md: 8,
+  lg: 12,
+  xl: 16,
   full: 9999,
 } as const;
 
-export const Shadows = Platform.select({
-  ios: {
-    sm: {
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: 0.05,
-      shadowRadius: 2,
-    },
-    md: {
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-    },
-    lg: {
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.15,
-      shadowRadius: 8,
-    },
-  },
-  default: {
-    sm: { elevation: 1 },
-    md: { elevation: 3 },
-    lg: { elevation: 6 },
-  },
-}) ?? { sm: {}, md: {}, lg: {} };
+export const Shadows = {
+  sm: { boxShadow: '0 1px 2px rgba(16, 17, 20, 0.06)' },
+  md: { boxShadow: '0 8px 24px rgba(16, 17, 20, 0.08)' },
+  lg: { boxShadow: '0 18px 42px rgba(16, 17, 20, 0.12)' },
+} as const;
 
 export const BottomTabInset = Platform.select({ ios: 50, android: 80 }) ?? 0;
 export const MaxContentWidth = 800;

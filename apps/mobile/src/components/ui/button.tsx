@@ -44,9 +44,9 @@ export function Button({
   };
 
   const sizeStyles: Record<ButtonSize, { height: number; paddingHorizontal: number }> = {
-    sm: { height: 36, paddingHorizontal: Spacing.three },
+    sm: { height: 34, paddingHorizontal: Spacing.three },
     md: { height: 48, paddingHorizontal: Spacing.four },
-    lg: { height: 52, paddingHorizontal: Spacing.five },
+    lg: { height: 50, paddingHorizontal: Spacing.five },
   };
 
   const fontSizes: Record<ButtonSize, number> = {
@@ -62,10 +62,15 @@ export function Button({
       style={[
         styles.base,
         sizeStyles[size],
-        { backgroundColor: bgColors[variant] },
+        {
+          backgroundColor: bgColors[variant],
+          borderColor: variant === "ghost" ? "transparent" : theme.border,
+        },
         (disabled || loading) && styles.disabled,
         styleProp,
       ]}
+      accessibilityRole="button"
+      accessibilityState={{ disabled: disabled || loading, busy: loading }}
     >
       {loading ? (
         <ActivityIndicator color={textColors[variant]} />
@@ -85,7 +90,8 @@ export function Button({
 
 const styles = StyleSheet.create({
   base: {
-    borderRadius: Radii.lg,
+    borderRadius: Radii.md,
+    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",

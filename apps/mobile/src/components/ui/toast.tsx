@@ -1,15 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
-import Animated, {
-  FadeIn,
-  FadeOut,
-  SlideInUp,
-} from "react-native-reanimated";
+import { EaseView } from "react-native-ease";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ThemedText } from "@/components/themed-text";
 import { useTheme } from "@/hooks/use-theme";
 import { Radii, Shadows, Spacing } from "@/constants/theme";
+import { haptics } from "@/lib/haptics";
 
 type ToastVariant = "default" | "success" | "destructive";
 
@@ -33,6 +30,11 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
 
   const addToast = useCallback((text: string, variant: ToastVariant = "default") => {
     const id = ++idRef.current;
+    if (variant === "success") {
+      haptics.success();
+    } else if (variant === "destructive") {
+      haptics.error();
+    }
     setMessages((prev) => [...prev, { id, text, variant }]);
     setTimeout(() => {
       setMessages((prev) => prev.filter((m) => m.id !== id));
@@ -66,10 +68,11 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
         pointerEvents="none"
       >
         {messages.map((msg) => (
-          <Animated.View
+          <EaseView
             key={msg.id}
-            entering={SlideInUp.duration(200).springify()}
-            exiting={FadeOut.duration(150)}
+            initialAnimate={{ opacity: 0, translateY: -10, scale: 0.98 }}
+            animate={{ opacity: 1, translateY: 0, scale: 1 }}
+            transition={{ type: "spring", damping: 18, stiffness: 220 }}
             style={[
               styles.toast,
               Shadows.md,
@@ -81,7 +84,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
             >
               {msg.text}
             </ThemedText>
-          </Animated.View>
+          </EaseView>
         ))}
       </View>
     </>

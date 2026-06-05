@@ -40,7 +40,10 @@ export function Input({ label, error, style, ...props }: InputProps) {
               ? theme.destructive
               : focused
                 ? theme.primary
-                : "transparent",
+                : theme.border,
+            boxShadow: focused
+              ? `0 0 0 3px ${theme.primary}20`
+              : "0 1px 2px rgba(16, 17, 20, 0.04)",
           },
           style,
         ]}
@@ -56,7 +59,7 @@ export function Input({ label, error, style, ...props }: InputProps) {
         {...props}
       />
       {error && (
-        <ThemedText style={[styles.error, { color: theme.destructive }]}>
+        <ThemedText style={[styles.error, { color: theme.destructive }]} selectable>
           {error}
         </ThemedText>
       )}
@@ -69,18 +72,21 @@ const styles = StyleSheet.create({
     gap: Spacing.one,
   },
   label: {
-    marginLeft: Spacing.one,
+    marginLeft: 1,
+    fontWeight: "700",
   },
   input: {
-    height: 52,
-    borderRadius: Radii.lg,
+    height: 48,
+    borderRadius: Radii.md,
     paddingHorizontal: Spacing.three,
     fontSize: Typography.base.fontSize,
+    lineHeight: Typography.base.lineHeight,
     fontFamily: Fonts?.sans,
     borderWidth: 1,
   },
   error: {
     fontSize: Typography.xs.fontSize,
-    marginLeft: Spacing.one,
+    lineHeight: Typography.xs.lineHeight,
+    marginLeft: 1,
   },
 });

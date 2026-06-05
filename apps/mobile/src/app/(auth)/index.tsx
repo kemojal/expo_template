@@ -1,17 +1,16 @@
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Linking, Platform, StyleSheet, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Platform, StyleSheet, View } from "react-native";
+import { EaseView } from "react-native-ease";
 import { PressableScale } from "pressto";
-import { SymbolView } from "expo-symbols";
-import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 
+import { AuthShell, BrandMark, LegalLinks } from "@/components/auth";
 import { ThemedText } from "@/components/themed-text";
 import { SocialAuthButton } from "@/components/ui/social-auth-button";
-import { useTheme } from "@/hooks/use-theme";
-import { Spacing } from "@/constants/theme";
-import { signInWithApple, signInWithGoogle } from "@/lib/social-auth";
 import { toast } from "@/components/ui/toast";
+import { Radii, Spacing, Typography } from "@/constants/theme";
+import { useTheme } from "@/hooks/use-theme";
+import { signInWithApple, signInWithGoogle } from "@/lib/social-auth";
 
 export default function WelcomeScreen() {
   const theme = useTheme();
@@ -46,56 +45,51 @@ export default function WelcomeScreen() {
   }
 
   return (
-    <SafeAreaView
-      style={[styles.container, { backgroundColor: theme.background }]}
-    >
-      {/* Hero */}
+    <AuthShell>
       <View style={styles.hero}>
-        <Animated.View entering={FadeIn.duration(600)}>
-          {Platform.OS === "ios" ? (
-            <SymbolView
-              name="bolt.fill"
-              tintColor={theme.primary}
-              style={styles.heroIcon}
-              weight="bold"
-            />
-          ) : (
-            <ThemedText
-              style={[styles.heroIconFallback, { color: theme.primary }]}
-            >
-              ⚡
-            </ThemedText>
-          )}
-        </Animated.View>
-
-        <Animated.View entering={FadeIn.delay(100).duration(600)}>
-          <ThemedText style={styles.appName}>Template</ThemedText>
-        </Animated.View>
-
-        <Animated.View entering={FadeIn.delay(200).duration(600)}>
-          <ThemedText style={styles.tagline} themeColor="textSecondary">
-            Your productivity, supercharged.
-          </ThemedText>
-        </Animated.View>
+        <BrandMark />
+        <EaseView
+          initialAnimate={{ opacity: 0, translateY: 8 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: "timing", duration: 260, easing: "easeOut", delay: 80 }}
+          style={[
+            styles.signal,
+            {
+              backgroundColor: theme.backgroundElement,
+              borderColor: theme.border,
+            },
+          ]}
+        >
+          <ThemedText style={styles.signalText}>Encrypted sync</ThemedText>
+          <View style={[styles.dot, { backgroundColor: theme.success }]} />
+        </EaseView>
       </View>
 
-      {/* Actions */}
       <View style={styles.actions}>
         {Platform.OS === "ios" && (
-          <Animated.View entering={FadeInDown.delay(350).springify()}>
+          <EaseView
+            initialAnimate={{ opacity: 0, translateY: 10 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ type: "timing", duration: 220, easing: "easeOut" }}
+          >
             <SocialAuthButton
               provider="apple"
               onPress={handleApple}
               loading={appleLoading}
               disabled={googleLoading}
             />
-          </Animated.View>
+          </EaseView>
         )}
 
-        <Animated.View
-          entering={FadeInDown.delay(
-            Platform.OS === "ios" ? 420 : 350
-          ).springify()}
+        <EaseView
+          initialAnimate={{ opacity: 0, translateY: 10 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{
+            type: "timing",
+            duration: 220,
+            easing: "easeOut",
+            delay: Platform.OS === "ios" ? 60 : 0,
+          }}
         >
           <SocialAuthButton
             provider="google"
@@ -103,145 +97,94 @@ export default function WelcomeScreen() {
             loading={googleLoading}
             disabled={appleLoading}
           />
-        </Animated.View>
+        </EaseView>
 
-        <Animated.View
-          entering={FadeIn.delay(
-            Platform.OS === "ios" ? 520 : 450
-          ).duration(400)}
-        >
-          <View style={styles.separator}>
-            <View style={[styles.separatorLine, { backgroundColor: theme.border }]} />
-            <ThemedText style={styles.separatorText} themeColor="textSecondary">
-              or
-            </ThemedText>
-            <View style={[styles.separatorLine, { backgroundColor: theme.border }]} />
-          </View>
-        </Animated.View>
-
-        <Animated.View
-          entering={FadeIn.delay(
-            Platform.OS === "ios" ? 560 : 490
-          ).duration(400)}
-        >
-          <PressableScale
-            onPress={() => router.push("/(auth)/(email)/sign-in")}
-            enabled={!anyLoading}
-            style={styles.emailButton}
-          >
-            <ThemedText style={styles.emailButtonText} themeColor="textSecondary">
-              Continue with email
-            </ThemedText>
-          </PressableScale>
-        </Animated.View>
-
-        <Animated.View
-          entering={FadeIn.delay(
-            Platform.OS === "ios" ? 620 : 550
-          ).duration(400)}
-        >
-          <ThemedText style={styles.legalText} themeColor="textSecondary">
-            By continuing, you agree to our{" "}
-            <ThemedText
-              style={styles.legalLink}
-              themeColor="textSecondary"
-              onPress={() => Linking.openURL("https://example.com/terms")}
-            >
-              Terms
-            </ThemedText>
-            {" and "}
-            <ThemedText
-              style={styles.legalLink}
-              themeColor="textSecondary"
-              onPress={() => Linking.openURL("https://example.com/privacy")}
-            >
-              Privacy Policy
-            </ThemedText>
+        <View style={styles.separator}>
+          <View style={[styles.separatorLine, { backgroundColor: theme.border }]} />
+          <ThemedText style={styles.separatorText} themeColor="textSecondary">
+            or
           </ThemedText>
-        </Animated.View>
+          <View style={[styles.separatorLine, { backgroundColor: theme.border }]} />
+        </View>
+
+        <PressableScale
+          onPress={() => router.push("/(auth)/(email)/sign-in")}
+          enabled={!anyLoading}
+          style={[
+            styles.emailButton,
+            {
+              backgroundColor: theme.backgroundElement,
+              borderColor: theme.border,
+            },
+            anyLoading && styles.disabled,
+          ]}
+          accessibilityRole="button"
+        >
+          <ThemedText style={styles.emailButtonText}>Continue with email</ThemedText>
+        </PressableScale>
+
+        <LegalLinks />
       </View>
-    </SafeAreaView>
+    </AuthShell>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-
-  // Hero
   hero: {
     flex: 1,
-    alignItems: "center",
     justifyContent: "center",
-    gap: 16,
+    alignItems: "center",
+    gap: Spacing.four,
+    minHeight: 280,
   },
-  heroIcon: {
-    width: 48,
-    height: 48,
+  signal: {
+    minHeight: 34,
+    paddingHorizontal: Spacing.three,
+    borderRadius: Radii.full,
+    borderWidth: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.two,
   },
-  heroIconFallback: {
-    fontSize: 44,
-  },
-  appName: {
-    fontSize: 32,
-    lineHeight: 40,
+  signalText: {
+    fontSize: Typography.sm.fontSize,
+    lineHeight: Typography.sm.lineHeight,
     fontWeight: "700",
-    letterSpacing: 0.2,
-    textAlign: "center",
   },
-  tagline: {
-    fontSize: 17,
-    lineHeight: 22,
-    fontWeight: "400",
-    textAlign: "center",
-    paddingHorizontal: Spacing.five,
+  dot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
   },
-
-  // Actions
   actions: {
-    paddingHorizontal: Spacing.four,
-    paddingBottom: Spacing.one,
-    gap: 10,
+    gap: Spacing.three,
   },
-
-  // Separator
   separator: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
-    paddingVertical: 2,
+    gap: Spacing.three,
   },
   separatorLine: {
     flex: 1,
     height: StyleSheet.hairlineWidth,
   },
   separatorText: {
-    fontSize: 13,
-    fontWeight: "400",
+    fontSize: 12,
+    fontWeight: "600",
   },
-
-  // Email
   emailButton: {
-    height: 38,
+    height: 48,
+    borderRadius: Radii.lg,
+    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
   },
   emailButtonText: {
-    fontSize: 15,
-    fontWeight: "600",
+    fontSize: Typography.base.fontSize,
+    lineHeight: Typography.base.lineHeight,
+    fontWeight: "700",
   },
-
-  // Legal
-  legalText: {
-    fontSize: 12,
-    lineHeight: 17,
-    textAlign: "center",
-    paddingHorizontal: Spacing.two,
-  },
-  legalLink: {
-    fontSize: 12,
-    fontWeight: "500",
-    textDecorationLine: "underline",
+  disabled: {
+    opacity: 0.5,
   },
 });

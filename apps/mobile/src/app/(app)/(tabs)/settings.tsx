@@ -1,12 +1,14 @@
-import { Pressable, ScrollView, StyleSheet } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
+import { ScrollView, StyleSheet, View } from "react-native";
+import { EaseView } from "react-native-ease";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { SettingsRow } from "@/components/settings";
 import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
-import { authClient } from "@/lib/auth";
-import { BottomTabInset, Spacing } from "@/constants/theme";
+import { BottomTabInset, MaxContentWidth, Spacing, Typography } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
+import { authClient } from "@/lib/auth";
+import { haptics } from "@/lib/haptics";
 
 export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
@@ -14,58 +16,62 @@ export default function SettingsScreen() {
   const theme = useTheme();
   const { data: session } = authClient.useSession();
 
-  const handleSignOut = async () => {
+  async function handleSignOut() {
     await authClient.signOut();
-  };
+    haptics.success();
+  }
 
   return (
     <ScrollView
       style={[styles.scrollView, { backgroundColor: theme.background }]}
+      contentInsetAdjustmentBehavior="automatic"
+      showsVerticalScrollIndicator={false}
       contentContainerStyle={[
         styles.contentContainer,
         {
-          paddingTop: insets.top + Spacing.four,
-          paddingBottom: insets.bottom + BottomTabInset + Spacing.three,
+          paddingTop: insets.top + Spacing.five,
+          paddingBottom: insets.bottom + BottomTabInset + Spacing.five,
         },
       ]}
     >
-      <ThemedView style={styles.section}>
-        <ThemedText type="subtitle">Account</ThemedText>
-
-        <Pressable
-          onPress={() => router.push("/(app)/profile")}
-          style={({ pressed }) => [
-            styles.row,
-            { backgroundColor: theme.backgroundElement },
-            pressed && styles.pressed,
-          ]}
-        >
-          <ThemedText>Profile</ThemedText>
-          <ThemedText themeColor="textSecondary">{session?.user.email}</ThemedText>
-        </Pressable>
-      </ThemedView>
-
-      <ThemedView style={styles.section}>
-        <ThemedText type="subtitle">App</ThemedText>
-
-        <ThemedView
-          type="backgroundElement"
-          style={styles.row}
-        >
-          <ThemedText>Version</ThemedText>
-          <ThemedText themeColor="textSecondary">1.0.0</ThemedText>
-        </ThemedView>
-      </ThemedView>
-
-      <Pressable
-        onPress={handleSignOut}
-        style={({ pressed }) => [
-          styles.signOutButton,
-          pressed && styles.pressed,
-        ]}
+      <EaseView
+        initialAnimate={{ opacity: 0, translateY: 8 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        transition={{ type: "timing", duration: 220, easing: "easeOut" }}
+        style={styles.header}
       >
-        <ThemedText style={styles.signOutText}>Sign Out</ThemedText>
-      </Pressable>
+        <ThemedText style={styles.title}>Settings</ThemedText>
+        <ThemedText style={styles.subtitle} themeColor="textSecondary">
+          Account and app controls.
+        </ThemedText>
+      </EaseView>
+
+      <View style={styles.section}>
+        <ThemedText style={styles.sectionTitle} themeColor="textSecondary">
+          Account
+        </ThemedText>
+        <SettingsRow
+          title="Profile"
+          value={session?.user.email}
+          icon="person.crop.circle"
+          onPress={() => router.push("/(app)/profile")}
+        />
+      </View>
+
+      <View style={styles.section}>
+        <ThemedText style={styles.sectionTitle} themeColor="textSecondary">
+          App
+        </ThemedText>
+        <SettingsRow title="Version" value="1.0.0" icon="square.stack.3d.up" />
+        <SettingsRow title="Sync" value="Healthy" icon="checkmark.icloud" />
+      </View>
+
+      <SettingsRow
+        title="Sign out"
+        icon="rectangle.portrait.and.arrow.right"
+        destructive
+        onPress={handleSignOut}
+      />
     </ScrollView>
   );
 }
@@ -75,32 +81,31 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   contentContainer: {
+    width: "100%",
+    maxWidth: MaxContentWidth,
+    alignSelf: "center",
     paddingHorizontal: Spacing.four,
     gap: Spacing.five,
+  },
+  header: {
+    gap: Spacing.one,
+  },
+  title: {
+    fontSize: Typography["2xl"].fontSize,
+    lineHeight: Typography["2xl"].lineHeight,
+    fontWeight: "800",
+  },
+  subtitle: {
+    fontSize: Typography.base.fontSize,
+    lineHeight: Typography.base.lineHeight,
   },
   section: {
     gap: Spacing.two,
   },
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.three,
-    borderRadius: Spacing.two,
-  },
-  signOutButton: {
-    alignItems: "center",
-    paddingVertical: Spacing.three,
-    borderRadius: Spacing.two,
-    backgroundColor: "#FF3B30",
-    marginTop: Spacing.three,
-  },
-  signOutText: {
-    color: "#FFFFFF",
-    fontWeight: "600",
-  },
-  pressed: {
-    opacity: 0.7,
+  sectionTitle: {
+    fontSize: Typography.xs.fontSize,
+    lineHeight: Typography.xs.lineHeight,
+    fontWeight: "800",
+    textTransform: "uppercase",
   },
 });

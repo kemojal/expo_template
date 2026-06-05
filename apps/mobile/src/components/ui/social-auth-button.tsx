@@ -6,7 +6,7 @@ import { Image } from "expo-image";
 import { ThemedText } from "@/components/themed-text";
 import { useTheme } from "@/hooks/use-theme";
 import { useColorScheme } from "@/hooks/use-color-scheme";
-import { Fonts, Radii, Spacing, Typography } from "@/constants/theme";
+import { Fonts, Radii, Shadows, Spacing, Typography } from "@/constants/theme";
 
 type SocialProvider = "apple" | "google";
 
@@ -74,9 +74,12 @@ export function SocialAuthButton({
       enabled={!disabled && !loading}
       style={[
         styles.button,
+        Shadows.sm,
         { backgroundColor, borderColor },
         (disabled || loading) && styles.disabled,
       ]}
+      accessibilityRole="button"
+      accessibilityState={{ disabled: disabled || loading, busy: loading }}
     >
       {loading ? (
         <ActivityIndicator color={foregroundColor} />
@@ -98,8 +101,8 @@ export function SocialAuthButton({
 
 const styles = StyleSheet.create({
   button: {
-    height: 50,
-    borderRadius: Radii.full,
+    height: 48,
+    borderRadius: Radii.lg,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
@@ -122,7 +125,8 @@ const styles = StyleSheet.create({
     height: 17,
   },
   label: {
-    fontSize: 16,
+    fontSize: Typography.base.fontSize,
+    lineHeight: Typography.base.lineHeight,
     fontWeight: "600",
     fontFamily: Fonts?.sans,
   },

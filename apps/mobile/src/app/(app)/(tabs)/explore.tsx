@@ -71,58 +71,55 @@ export default function ExploreScreen() {
       contentContainerStyle={[styles.contentContainer, contentPlatformStyle]}
     >
       <ThemedText type="subtitle" style={styles.sectionTitle}>
-        Components
+        Studio
       </ThemedText>
 
-      {/* Buttons */}
       <Card>
-        <CardHeader title="Buttons" subtitle="Pressable with scale feedback" />
+        <CardHeader title="Actions" subtitle="Fast workspace controls" />
         <CardContent>
           <View style={styles.row}>
-            <Button title="Primary" onPress={() => toast("Pressed!")} />
+            <Button title="Capture" onPress={() => toast("Captured")} />
             <Button
-              title="Secondary"
+              title="Review"
               variant="secondary"
-              onPress={() => toast("Secondary")}
+              onPress={() => toast("Review queued")}
             />
           </View>
           <View style={[styles.row, { marginTop: Spacing.two }]}>
             <Button
-              title="Destructive"
+              title="Archive"
               variant="destructive"
-              onPress={() => toast("Destructive", "destructive")}
+              onPress={() => toast("Archived", "destructive")}
             />
             <Button
-              title="Ghost"
+              title="Draft"
               variant="ghost"
-              onPress={() => toast("Ghost")}
+              onPress={() => toast("Draft saved")}
             />
           </View>
           <View style={[styles.row, { marginTop: Spacing.two }]}>
-            <Button title="Small" size="sm" onPress={() => {}} />
-            <Button title="Loading" loading onPress={() => {}} />
-            <Button title="Disabled" disabled onPress={() => {}} />
+            <Button title="Compact" size="sm" onPress={() => toast("Compact")} />
+            <Button title="Syncing" loading onPress={() => {}} />
+            <Button title="Locked" disabled onPress={() => {}} />
           </View>
         </CardContent>
       </Card>
 
-      {/* Badges */}
       <Card>
-        <CardHeader title="Badges" />
+        <CardHeader title="Status" />
         <CardContent>
           <View style={styles.row}>
-            <Badge label="Default" />
-            <Badge label="Primary" variant="primary" />
-            <Badge label="Success" variant="success" />
-            <Badge label="Warning" variant="warning" />
-            <Badge label="Error" variant="destructive" />
+            <Badge label="Ready" />
+            <Badge label="Focus" variant="primary" />
+            <Badge label="Synced" variant="success" />
+            <Badge label="Review" variant="warning" />
+            <Badge label="Blocked" variant="destructive" />
           </View>
         </CardContent>
       </Card>
 
-      {/* Avatars */}
       <Card>
-        <CardHeader title="Avatars" />
+        <CardHeader title="Team" />
         <CardContent>
           <View style={styles.row}>
             <Avatar fallback="A" size="sm" />
@@ -132,11 +129,10 @@ export default function ExploreScreen() {
         </CardContent>
       </Card>
 
-      {/* Form */}
       <Card>
         <CardHeader
-          title="Form"
-          subtitle="React Hook Form + Zod validation"
+          title="Feedback"
+          subtitle="Send a workspace note"
         />
         <CardContent>
           <View style={styles.formFields}>
@@ -158,7 +154,7 @@ export default function ExploreScreen() {
               control={control}
               name="message"
               label="Message"
-              placeholder="Tell us something..."
+              placeholder="What should change?"
               multiline
               numberOfLines={3}
               style={{ height: 80, textAlignVertical: "top", paddingTop: 12 }}
@@ -172,19 +168,18 @@ export default function ExploreScreen() {
         </CardContent>
       </Card>
 
-      {/* Toast demo */}
       <Card>
-        <CardHeader title="Toast" subtitle="Slide-in notifications" />
+        <CardHeader title="Signals" />
         <CardContent>
           <View style={styles.row}>
             <Button
-              title="Default"
+              title="Note"
               variant="secondary"
               size="sm"
               onPress={() => toast("Hello!")}
             />
             <Button
-              title="Success"
+              title="Saved"
               variant="secondary"
               size="sm"
               onPress={() => toast("Saved!", "success")}

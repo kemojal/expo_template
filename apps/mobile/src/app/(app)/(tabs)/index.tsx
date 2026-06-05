@@ -1,98 +1,126 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from "expo-router";
+import { ScrollView, StyleSheet, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { EaseView } from "react-native-ease";
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+import { ThemedText } from "@/components/themed-text";
+import { Card, CardContent, CardHeader } from "@/components/ui";
+import {
+  ActivityRow,
+  MetricCard,
+  QuickAction,
+  StatusStrip,
+} from "@/components/dashboard";
+import { BottomTabInset, MaxContentWidth, Spacing, Typography } from "@/constants/theme";
+import { useTheme } from "@/hooks/use-theme";
+import { authClient } from "@/lib/auth";
 
 export default function HomeScreen() {
+  const router = useRouter();
+  const theme = useTheme();
+  const insets = useSafeAreaInsets();
+  const { data: session } = authClient.useSession();
+  const name = session?.user.name?.split(" ")[0] || "there";
+
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
+    <ScrollView
+      style={[styles.scrollView, { backgroundColor: theme.background }]}
+      contentInsetAdjustmentBehavior="automatic"
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={[
+        styles.content,
+        {
+          paddingTop: insets.top + Spacing.five,
+          paddingBottom: insets.bottom + BottomTabInset + Spacing.five,
+        },
+      ]}
+    >
+      <EaseView
+        initialAnimate={{ opacity: 0, translateY: 8 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        transition={{ type: "timing", duration: 220, easing: "easeOut" }}
+        style={styles.header}
+      >
+        <View style={styles.titleGroup}>
+          <ThemedText style={styles.eyebrow} themeColor="textSecondary">
+            Template OS
           </ThemedText>
-        </ThemedView>
+          <ThemedText style={styles.title}>Good to see you, {name}</ThemedText>
+        </View>
+        <StatusStrip email={session?.user.email} />
+      </EaseView>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
+      <View style={styles.metrics}>
+        <MetricCard label="Focus" value="3" detail="active streams" delay={40} />
+        <MetricCard label="Sync" value="98%" detail="healthy" delay={80} />
+      </View>
 
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
+      <View style={styles.actions}>
+        <QuickAction
+          icon="plus"
+          title="New task"
+          onPress={() => router.push("/(app)/(tabs)/explore")}
+        />
+        <QuickAction
+          icon="person.crop.circle"
+          title="Profile"
+          onPress={() => router.push("/(app)/profile")}
+        />
+      </View>
 
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+      <Card>
+        <CardHeader title="Today" subtitle="Workspace activity" />
+        <CardContent>
+          <View style={styles.activityList}>
+            <ActivityRow title="Session restored" time="Just now" tone="success" />
+            <ActivityRow title="Local data synced" time="2 min ago" />
+            <ActivityRow title="API health checked" time="Today" tone="warning" />
+          </View>
+        </CardContent>
+      </Card>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  scrollView: {
     flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
   },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
+  content: {
+    width: "100%",
     maxWidth: MaxContentWidth,
-  },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
+    alignSelf: "center",
     paddingHorizontal: Spacing.four,
     gap: Spacing.four,
   },
+  header: {
+    gap: Spacing.four,
+  },
+  titleGroup: {
+    gap: Spacing.one,
+  },
+  eyebrow: {
+    fontSize: Typography.xs.fontSize,
+    lineHeight: Typography.xs.lineHeight,
+    fontWeight: "800",
+    textTransform: "uppercase",
+  },
   title: {
-    textAlign: 'center',
+    fontSize: Typography["2xl"].fontSize,
+    lineHeight: Typography["2xl"].lineHeight,
+    fontWeight: "800",
   },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
+  metrics: {
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+  },
+  actions: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: Spacing.three,
+  },
+  activityList: {
+    gap: Spacing.three,
   },
 });
