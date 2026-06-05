@@ -1,7 +1,7 @@
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Platform, StyleSheet, View } from "react-native";
-import { EaseView } from "react-native-ease";
+import { EaseView } from "@/components/ui/ease-view";
 import { PressableScale } from "pressto";
 
 import { AuthShell, BrandMark, LegalLinks } from "@/components/auth";

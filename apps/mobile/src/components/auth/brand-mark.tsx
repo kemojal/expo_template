@@ -1,6 +1,6 @@
 import { Platform, StyleSheet, View } from "react-native";
 import { SymbolView } from "expo-symbols";
-import { EaseView } from "react-native-ease";
+import { EaseView } from "@/components/ui/ease-view";
 
 import { ThemedText } from "@/components/themed-text";
 import { Radii, Spacing, Typography } from "@/constants/theme";

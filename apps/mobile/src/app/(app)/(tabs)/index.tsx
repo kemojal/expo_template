@@ -1,7 +1,7 @@
 import { useRouter } from "expo-router";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { EaseView } from "react-native-ease";
+import { EaseView } from "@/components/ui/ease-view";
 
 import { ThemedText } from "@/components/themed-text";
 import { Card, CardContent, CardHeader } from "@/components/ui";

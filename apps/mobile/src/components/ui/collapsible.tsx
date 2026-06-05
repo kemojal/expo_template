@@ -1,7 +1,7 @@
 import { SymbolView } from 'expo-symbols';
 import { PropsWithChildren, useState } from 'react';
 import { StyleSheet } from 'react-native';
-import { EaseView } from 'react-native-ease';
+import { EaseView } from '@/components/ui/ease-view';
 import { PressableScale } from 'pressto';
 
 import { ThemedText } from '@/components/themed-text';

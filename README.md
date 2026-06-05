@@ -63,11 +63,49 @@ bun run start -- -c
 
 ## Apple Sign In client secret
 
-Better Auth expects `APPLE_CLIENT_SECRET` to be a JWT you sign with your Apple `.p8` key. Generate it locally (key never leaves your browser):
+Better Auth expects `APPLE_CLIENT_SECRET` to be a JWT you sign with your Apple `.p8` key.
+
+### Getting your `.p8` key
+
+1. Go to [Apple Developer → Keys](https://developer.apple.com/account/resources/authkeys/list)
+2. Click **+**, name the key, enable **Sign in with Apple**, configure with your Primary App ID
+3. Register and **Download** — this gives you `AuthKey_XXXXXXXXXX.p8`
+4. The `XXXXXXXXXX` in the filename is your `APPLE_KEY_ID`
+
+> **You can only download the `.p8` file once.** Store it securely.
+
+### CLI (recommended)
+
+1. Add to your `.env`:
+   ```
+   APPLE_TEAM_ID=AB12CD34EF
+   APPLE_KEY_ID=86SC63GFSQ
+   APPLE_CLIENT_ID=com.yourapp.template
+   ```
+2. Run:
+   ```bash
+   bun run scripts/generate-apple-secret.ts ../p8/AuthKey_86SC63GFSQ.p8
+   ```
+3. Copy the output JWT into `APPLE_CLIENT_SECRET` in `.env`. Valid for 180 days — regenerate before expiry.
+
+### Browser (alternative)
 
 1. Start the API: `bun run dev:api`
 2. Open [http://localhost:3000/tools/apple-client-secret](http://localhost:3000/tools/apple-client-secret)
-3. Paste the JWT into `APPLE_CLIENT_SECRET` in `.env` (regenerate before it expires, up to 180 days)
+3. Fill in the form — the key never leaves your browser.
+
+## Deploying the API (Dokploy / Docker)
+
+The repo includes a `Dockerfile` at the root that builds the API server.
+
+1. Point Dokploy at your Git repo — it auto-detects the `Dockerfile`.
+2. Set the environment variables listed in `.env.example` in Dokploy's UI.
+3. Expose ports **3000** (HTTP) and **3001** (WebSocket sync).
+4. Health check endpoint: `GET /health`
+5. Run database migrations before first deploy:
+   ```bash
+   bun run --cwd packages/db db:migrate
+   ```
 
 ## Mobile app
 
@@ -78,3 +116,4 @@ Better Auth expects `APPLE_CLIENT_SECRET` to be a JWT you sign with your Apple `
 
 - [Expo documentation](https://docs.expo.dev/)
 - [Expo SDK 56 docs](https://docs.expo.dev/versions/v56.0.0/)
+run backend  npm run dev:api o

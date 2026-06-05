@@ -5,19 +5,65 @@ import { haptics } from "./haptics";
 
 const appCallbackURL = "/callback";
 
+async function signInWithAppleWeb() {
+  const { error } = await authClient.signIn.social({
+    provider: "apple",
+    callbackURL: appCallbackURL,
+  });
+
+  if (error) {
+    throw new Error(error.message || "Apple sign in failed");
+  }
+}
+
+async function canUseNativeAppleAuth() {
+  if (Platform.OS !== "ios") {
+    return false;
+  }
+
+  try {
+    return await AppleAuthentication.isAvailableAsync();
+  } catch {
+    return false;
+  }
+}
+
+function isAppleAuthUnavailableError(error: unknown) {
+  if (!(error instanceof Error)) {
+    return false;
+  }
+
+  return (
+    error.message.includes("expo-apple-authentication.signInAsync") ||
+    error.message.includes("not available on ios")
+  );
+}
+
 /**
  * Sign in with Apple.
  * iOS: Uses native Apple Authentication for a seamless sheet experience.
  * Other platforms: Falls back to web-based OAuth via Better Auth.
  */
 export async function signInWithApple() {
-  if (Platform.OS === "ios") {
-    const credential = await AppleAuthentication.signInAsync({
-      requestedScopes: [
-        AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-        AppleAuthentication.AppleAuthenticationScope.EMAIL,
-      ],
-    });
+  if (await canUseNativeAppleAuth()) {
+    let credential: AppleAuthentication.AppleAuthenticationCredential;
+
+    try {
+      credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      });
+    } catch (error) {
+      if (isAppleAuthUnavailableError(error)) {
+        await signInWithAppleWeb();
+        haptics.success();
+        return;
+      }
+
+      throw error;
+    }
 
     if (!credential.identityToken) {
       throw new Error("No identity token received from Apple");
@@ -39,16 +85,7 @@ export async function signInWithApple() {
     return;
   }
 
-  // Android / web fallback — web-based OAuth flow
-  const { error } = await authClient.signIn.social({
-    provider: "apple",
-    callbackURL: appCallbackURL,
-  });
-
-  if (error) {
-    throw new Error(error.message || "Apple sign in failed");
-  }
-
+  await signInWithAppleWeb();
   haptics.success();
 }
 

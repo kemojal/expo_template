@@ -8,7 +8,7 @@ export default function AuthLayout() {
       <Stack.Screen
         name="(email)"
         options={{
-          presentation: "modal",
+          presentation: "fullScreenModal",
           gestureEnabled: true,
           fullScreenGestureEnabled: true,
         }}

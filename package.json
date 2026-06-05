@@ -10,5 +10,9 @@
     "test": "bun run --filter '*' test",
     "typecheck": "bun run --filter '*' typecheck",
     "clean": "rm -rf node_modules apps/*/node_modules packages/*/node_modules tooling/*/node_modules"
+  },
+  "devDependencies": {
+    "dotenv": "^17.4.2",
+    "jose": "^6.2.3"
   }
 }

@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import { Platform, ScrollView, StyleSheet, View } from "react-native";
-import { EaseView } from "react-native-ease";
+import { EaseView } from "@/components/ui/ease-view";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SettingsRow } from "@/components/settings";

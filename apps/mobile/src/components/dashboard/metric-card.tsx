@@ -1,5 +1,5 @@
 import { StyleSheet, View } from "react-native";
-import { EaseView } from "react-native-ease";
+import { EaseView } from "@/components/ui/ease-view";
 
 import { ThemedText } from "@/components/themed-text";
 import { Radii, Shadows, Spacing, Typography } from "@/constants/theme";

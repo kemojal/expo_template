@@ -1,5 +1,4 @@
-import { config } from "dotenv";
-config({ path: "../../.env" });
+import "./env";
 
 import { Hono } from "hono";
 import { cors } from "hono/cors";
@@ -19,9 +18,11 @@ app.use(
   "*",
   cors({
     origin: [
-      "http://localhost:8081",
-      "http://localhost:19006",
+      ...(process.env.NODE_ENV === "production"
+        ? []
+        : ["http://localhost:8081", "http://localhost:19006"]),
       process.env.EXPO_PUBLIC_API_URL || "http://localhost:3000",
+      ...(process.env.CORS_ORIGINS?.split(",").map((o) => o.trim()).filter(Boolean) ?? []),
     ],
     allowHeaders: ["Content-Type", "Authorization"],
     allowMethods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],

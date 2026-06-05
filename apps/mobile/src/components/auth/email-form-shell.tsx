@@ -5,7 +5,7 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import { EaseView } from "react-native-ease";
+import { EaseView } from "@/components/ui/ease-view";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ThemedText } from "@/components/themed-text";
@@ -79,8 +79,9 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    justifyContent: "center",
+    justifyContent: "flex-start",
     paddingHorizontal: Spacing.four,
+    paddingTop: Spacing.five,
   },
   form: {
     width: "100%",
