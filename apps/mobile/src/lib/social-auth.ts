@@ -5,15 +5,29 @@ import { haptics } from "./haptics";
 
 const appCallbackURL = "/callback";
 
+/**
+ * After social sign-in resolves, the expo plugin may have already stored
+ * the cookie. Call getSession to confirm and return the result.
+ */
+async function confirmSession(): Promise<boolean> {
+  // Give the expo plugin a moment to store the cookie
+  await new Promise((r) => setTimeout(r, 300));
+
+  for (let i = 0; i < 10; i++) {
+    try {
+      const { data } = await authClient.getSession();
+      if (data?.session) return true;
+    } catch {}
+    await new Promise((r) => setTimeout(r, 500));
+  }
+  return false;
+}
+
 async function signInWithAppleWeb() {
-  const { error } = await authClient.signIn.social({
+  await authClient.signIn.social({
     provider: "apple",
     callbackURL: appCallbackURL,
   });
-
-  if (error) {
-    throw new Error(error.message || "Apple sign in failed");
-  }
 }
 
 async function canUseNativeAppleAuth() {
@@ -58,6 +72,7 @@ export async function signInWithApple() {
     } catch (error) {
       if (isAppleAuthUnavailableError(error)) {
         await signInWithAppleWeb();
+        await confirmSession();
         haptics.success();
         return;
       }
@@ -81,11 +96,13 @@ export async function signInWithApple() {
       throw new Error(error.message || "Apple sign in failed");
     }
 
+    await confirmSession();
     haptics.success();
     return;
   }
 
   await signInWithAppleWeb();
+  await confirmSession();
   haptics.success();
 }
 
@@ -95,14 +112,11 @@ export async function signInWithApple() {
  * handles the expo-web-browser redirect flow automatically.
  */
 export async function signInWithGoogle() {
-  const { error } = await authClient.signIn.social({
+  await authClient.signIn.social({
     provider: "google",
     callbackURL: appCallbackURL,
   });
 
-  if (error) {
-    throw new Error(error.message || "Google sign in failed");
-  }
-
+  await confirmSession();
   haptics.success();
 }

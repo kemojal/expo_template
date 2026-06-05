@@ -8,13 +8,13 @@ import { ThemedText } from "@/components/themed-text";
 import { Avatar } from "@/components/ui";
 import { MaxContentWidth, Radii, Shadows, Spacing, Typography } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
-import { authClient } from "@/lib/auth";
+import { useSession } from "@/lib/session-context";
 
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const theme = useTheme();
-  const { data: session } = authClient.useSession();
+  const { session } = useSession();
   const user = session?.user;
   const name = user?.name || "Workspace user";
   const initials = name.charAt(0).toUpperCase();

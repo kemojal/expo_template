@@ -7,13 +7,12 @@ import { PressablesConfig } from "pressto";
 
 import { AnimatedSplashOverlay } from "@/components/animated-icon";
 import { ToastProvider } from "@/components/ui/toast";
-import { authClient } from "@/lib/auth";
 import { haptics } from "@/lib/haptics";
+import { SessionProvider, useSession } from "@/lib/session-context";
 import { StoreProvider } from "@/lib/store-provider";
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const { data: session, isPending } = authClient.useSession();
+function RootNavigator() {
+  const { session, isPending } = useSession();
   const segments = useSegments();
   const router = useRouter();
 
@@ -30,6 +29,16 @@ export default function RootLayout() {
   }, [session, isPending, segments]);
 
   return (
+    <StoreProvider sessionToken={session?.session.token}>
+      <Slot />
+    </StoreProvider>
+  );
+}
+
+export default function RootLayout() {
+  const colorScheme = useColorScheme();
+
+  return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <PressablesConfig
         animationType="spring"
@@ -41,9 +50,9 @@ export default function RootLayout() {
         <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
           <AnimatedSplashOverlay />
           <ToastProvider>
-            <StoreProvider sessionToken={session?.session.token}>
-              <Slot />
-            </StoreProvider>
+            <SessionProvider>
+              <RootNavigator />
+            </SessionProvider>
           </ToastProvider>
         </ThemeProvider>
       </PressablesConfig>

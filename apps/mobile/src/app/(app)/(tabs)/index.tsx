@@ -13,13 +13,13 @@ import {
 } from "@/components/dashboard";
 import { BottomTabInset, MaxContentWidth, Spacing, Typography } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
-import { authClient } from "@/lib/auth";
+import { useSession } from "@/lib/session-context";
 
 export default function HomeScreen() {
   const router = useRouter();
   const theme = useTheme();
   const insets = useSafeAreaInsets();
-  const { data: session } = authClient.useSession();
+  const { session } = useSession();
   const name = session?.user.name?.split(" ")[0] || "there";
 
   return (

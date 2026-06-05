@@ -5,12 +5,16 @@ import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { ThemedText } from "@/components/themed-text";
 import { Spacing } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
-import { authClient } from "@/lib/auth";
+import { useSession } from "@/lib/session-context";
 
 export default function AuthCallbackScreen() {
   const router = useRouter();
   const theme = useTheme();
-  const { data: session, isPending } = authClient.useSession();
+  const { session, isPending, refresh } = useSession();
+
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
 
   useEffect(() => {
     if (!isPending && session) {

@@ -9,12 +9,13 @@ import { BottomTabInset, MaxContentWidth, Spacing, Typography } from "@/constant
 import { useTheme } from "@/hooks/use-theme";
 import { authClient } from "@/lib/auth";
 import { haptics } from "@/lib/haptics";
+import { useSession } from "@/lib/session-context";
 
 export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const theme = useTheme();
-  const { data: session } = authClient.useSession();
+  const { session } = useSession();
 
   async function handleSignOut() {
     await authClient.signOut();
