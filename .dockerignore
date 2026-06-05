@@ -2,6 +2,7 @@ node_modules
 .git
 .github
 apps
+!apps/mobile/package.json
 docs
 *.md
 .env*
